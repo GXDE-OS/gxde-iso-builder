@@ -245,6 +245,10 @@ fi
 chrootCommand systemctl disable nmbd
 if [[ $2 == hetao ]]; then
     installWithAptss install linux-firmware -y
+    if [[ $1 == loong64 ]]; then
+        # 安装 loong gpu 驱动
+        installWithAptss install loonggpu-driver -y
+    fi
 else
     installWithAptss install firmware-linux -y
 fi
