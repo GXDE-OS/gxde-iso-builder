@@ -1,7 +1,7 @@
 #!/bin/bash
 function installWithAptss() {
     if [[ $isUnAptss == 1 ]]; then
-        chrootCommand apt "$@"
+        chrootCommand /usr/bin/apt "$@"
     else
         chrootCommand aptss "$@"
     fi
@@ -40,7 +40,7 @@ function buildDebianRootf() {
             --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
             --arch $1 unstable $debianRootfsPath https://mirrors.nju.edu.cn/debian-ports/
         if [[ $? != 0 ]]; then
-            sudo apt install squashfs-tools git aria2 -y
+            sudo /usr/bin/apt install squashfs-tools git aria2 -y
             aria2c -x 16 -s 16 https://repo.gxde.top/TGZ/debian-base-loong64/debian-base-loong64.squashfs
             sudo unsquashfs debian-base-loong64.squashfs
             sudo rm -rf $debianRootfsPath/
@@ -69,8 +69,8 @@ if [[ $1 == aptss ]] || [[ $2 == aptss ]]|| [[ $3 == aptss ]]; then
     export isUnAptss=0
 fi
 sudo rm -rf grub-deb
-sudo apt install debian-archive-keyring debian-ports-archive-keyring -y
-sudo apt install debootstrap  \
+sudo /usr/bin/apt install debian-archive-keyring debian-ports-archive-keyring -y
+sudo /usr/bin/apt install debootstrap  \
     qemu-user-static genisoimage xorriso \
     squashfs-tools -y
 # 构建核心系统
@@ -139,17 +139,17 @@ set +e
 # 安装应用
 
 sudo $programPath/pardus-chroot $debianRootfsPath
-chrootCommand apt update -o Acquire::Check-Valid-Until=false
-chrootCommand apt install debian-ports-archive-keyring debian-archive-keyring -y
-chrootCommand apt install sudo vim -y
-chrootCommand apt install gxde-source -y
+chrootCommand /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+chrootCommand /usr/bin/apt install debian-ports-archive-keyring debian-archive-keyring -y
+chrootCommand /usr/bin/apt install sudo vim -y
+chrootCommand /usr/bin/apt install gxde-source -y
 chrootCommand rm -rfv /etc/apt/sources.list.d/temp.list
-chrootCommand apt update -o Acquire::Check-Valid-Until=false
+chrootCommand /usr/bin/apt update -o Acquire::Check-Valid-Until=false
 if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
-    chrootCommand apt install gxde-testing-source -y
-    chrootCommand apt update -o Acquire::Check-Valid-Until=false
+    chrootCommand /usr/bin/apt install gxde-testing-source -y
+    chrootCommand /usr/bin/apt update -o Acquire::Check-Valid-Until=false
 fi
-chrootCommand apt install aptss -y
+chrootCommand /usr/bin/apt install aptss -y
 chrootCommand aptss update -o Acquire::Check-Valid-Until=false
 
 
@@ -202,24 +202,24 @@ elif [[ $1 == arm64 ]]; then
     chrootCommand aptss install firefox-spark -y
     installWithAptss install dummyapp-wps-office dummyapp-spark-deepin-wine-runner -y
 elif [[ $1 == "mips64el" ]]; then
-    chrootCommand apt install loongsonapplication -y
+    chrootCommand /usr/bin/apt install loongsonapplication -y
     installWithAptss install firefox-esr firefox-esr-l10n-zh-cn -y
 elif [[ $1 == "i386" ]]; then
-    chrootCommand apt install aptss -y
+    chrootCommand /usr/bin/apt install aptss -y
     installWithAptss update -o Acquire::Check-Valid-Until=false
     installWithAptss install firefox-esr firefox-esr-l10n-zh-cn -y
     installWithAptss install dummyapp-spark-deepin-wine-runner boot-repair -y
 else 
-    chrootCommand apt install aptss -y
+    chrootCommand /usr/bin/apt install aptss -y
     installWithAptss update -o Acquire::Check-Valid-Until=false
     installWithAptss install firefox-esr firefox-esr-l10n-zh-cn -y
 fi
 #if [[ $1 == arm64 ]] || [[ $1 == loong64 ]]; then
 #    installWithAptss install spark-box64 -y
 #fi
-#chrootCommand apt install grub-efi-$1 -y
+#chrootCommand /usr/bin/apt install grub-efi-$1 -y
 #if [[ $1 != amd64 ]]; then
-#    chrootCommand apt install grub-efi-$1 -y
+#    chrootCommand /usr/bin/apt install grub-efi-$1 -y
 #fi
 # 卸载无用应用
 installWithAptss purge  mlterm mlterm-tiny deepin-terminal-gtk deepin-terminal ibus systemsettings deepin-wine8-stable breeze-* mpv ghostty -y
@@ -260,11 +260,11 @@ installWithAptss autopurge fonts-noto-extra fonts-noto-ui-extra fonts-noto-cjk-e
 installWithAptss autopurge -y
 installWithAptss clean
 # 下载所需的安装包
-chrootCommand apt install grub-pc --download-only -y
-chrootCommand apt install grub-efi-$1 --download-only -y
-chrootCommand apt install grub-efi --download-only -y
-chrootCommand apt install grub-common --download-only -y
-chrootCommand apt install cryptsetup-initramfs cryptsetup keyutils --download-only -y
+chrootCommand /usr/bin/apt install grub-pc --download-only -y
+chrootCommand /usr/bin/apt install grub-efi-$1 --download-only -y
+chrootCommand /usr/bin/apt install grub-efi --download-only -y
+chrootCommand /usr/bin/apt install grub-common --download-only -y
+chrootCommand /usr/bin/apt install cryptsetup-initramfs cryptsetup keyutils --download-only -y
 
 
 mkdir grub-deb
