@@ -1,1 +1,8 @@
 deb [trusted=true] http://repo.gxde.top/gxde-os/lizhi ./
+deb http://mirrors.cernet.edu.cn/debian trixie-updates main contrib non-free non-free-firmware
+#deb-src http://mirrors.cernet.edu.cn/debian trixie-updates main contrib non-free non-free-firmware
+deb https://mirrors.cernet.edu.cn/debian-security/ trixie-security main contrib non-free non-free-firmware
+#deb-src https://mirrors.cernet.edu.cn/debian-security/ trixie-security main contrib non-free non-free-firmware
+# Backports allow you to install newer versions of software made available for this release
+deb https://mirrors.cernet.edu.cn/debian trixie-backports main contrib non-free non-free-firmware
+#deb-src https://mirrors.cernet.edu.cn/debian trixie-backports main contrib non-free non-free-firmware
