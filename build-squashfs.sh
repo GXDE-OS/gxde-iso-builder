@@ -54,6 +54,7 @@ function buildDebianRootf() {
 }
 programPath=$(cd $(dirname $0); pwd)
 debianRootfsPath=debian-rootfs
+mipsInstallerPath=mipsInstaller
 if [[ $1 == "" ]]; then
     echo 请指定架构：i386 amd64 arm64 mips64el loong64
     echo 还可以代号以构建内测镜像
@@ -117,6 +118,33 @@ case $2 in
     ;;
 esac
 
+if [[ $1 == "mips64el" ]]; then
+    # 因 mips64el 的 EFI 比较特殊，所以我们将使用 loongnix20 的 calamares 来安装配置 GXDE
+    if [[ ! -e /usr/share/debootstrap/scripts/DaoXiangHu-stable ]]; then
+            sudo cp DaoXiangHu-testing /usr/share/debootstrap/scripts/ -v
+    fi
+    sudo debootstrap --no-check-gpg --arch $1 \
+            DaoXiangHu-testing $mipsInstallerPath http://ftp.loongnix.cn/os/loongnix/20/mips64el/
+    echo "gxde-os" | sudo tee $mipsInstallerPath/etc/hostname
+    sudo $programPath/pardus-chroot $mipsInstallerPath
+    chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+    chroot $mipsInstallerPath apt install calamares live-task-standard lxqt -y
+    sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
+    chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+    if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
+        chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
+        chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+    fi
+    chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el -y
+    chroot $mipsInstallerPath apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y
+    chroot $mipsInstallerPath apt clean
+    cp -rv $programPath/EFI-mips64el $mipsInstallerPath/EFI
+    UNMount $mipsInstallerPath
+    cd $mipsInstallerPath
+    mksquashfs * ../installer.squashfs
+    cd ..
+fi
+
 # 修改系统主机名
 echo "gxde-os" | sudo tee $debianRootfsPath/etc/hostname
 # 写入源
@@ -161,9 +189,9 @@ chrootCommand dpkg-reconfigure gxde-session-ui
 if [[ $1 != "mips64el" ]]; then
 	installWithAptss install calamares-settings-gxde --install-recommends -y
 else
-	installWithAptss install calamares-settings-gxde-mips64el --install-recommends -y
+	#installWithAptss install calamares-settings-gxde-mips64el --install-recommends -y
 	installWithAptss install dracut --install-recommends -y
-	cp -rv $programPath/EFI-mips64el $debianRootfsPath
+	cp -rv $programPath/EFI-mips64el $debianRootfsPath/EFI
 fi
 if [[ $2 == "hetao" ]]; then
     # 安装该包以正常运行 dtk6 应用
@@ -210,7 +238,7 @@ elif [[ $1 == "i386" ]]; then
     chrootCommand /usr/bin/apt install aptss -y
     installWithAptss update -o Acquire::Check-Valid-Until=false
     installWithAptss install firefox-esr firefox-esr-l10n-zh-cn -y
-    installWithAptss install dummyapp-spark-deepin-wine-runner boot-repair -y
+    installWithAptss install boot-repair -y
 else 
     chrootCommand /usr/bin/apt install aptss -y
     installWithAptss update -o Acquire::Check-Valid-Until=false
@@ -328,7 +356,12 @@ fi
 if [[ ! -f live/vmlinuz-oldstable ]] ;then
     cp live/vmlinuz live/vmlinuz-oldstable
 fi
-sudo mv ../../filesystem.squashfs live/filesystem.squashfs -v
+if [[ $1 == "mips64el" ]]; then
+    sudo mv ../../installer.squashfs live/filesystem.squashfs -v
+    sudo mv ../../filesystem.squashfs live/system.img -v
+else
+    sudo mv ../../filesystem.squashfs live/filesystem.squashfs -v
+fi
 cd ..
 bash $1-build.sh
 mv gxde.iso ..
