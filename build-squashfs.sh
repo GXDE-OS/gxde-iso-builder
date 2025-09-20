@@ -162,6 +162,8 @@ if [[ $1 != "mips64el" ]]; then
 	installWithAptss install calamares-settings-gxde --install-recommends -y
 else
 	installWithAptss install calamares-settings-gxde-mips64el --install-recommends -y
+	installWithAptss install dracut --install-recommends -y
+	cp -rv $programPath/EFI-mips64el $debianRootfsPath
 fi
 if [[ $2 == "hetao" ]]; then
     # 安装该包以正常运行 dtk6 应用
