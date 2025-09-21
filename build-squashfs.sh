@@ -47,7 +47,7 @@ function buildDebianRootf() {
             sudo mv squashfs-root $debianRootfsPath -v
         fi
     else
-        sudo debootstrap --arch $1 \
+        sudo debootstrap --no-check-gpg --arch $1 \
             --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
             $2 $debianRootfsPath https://mirrors.cernet.edu.cn/debian/
     fi
@@ -64,6 +64,10 @@ fi
 if [[ -d $debianRootfsPath ]]; then
     UNMount $debianRootfsPath
     sudo rm -rf $debianRootfsPath
+fi
+if [[ -d $mipsInstallerPath ]]; then
+    UNMount $mipsInstallerPath
+    sudo rm -rf $mipsInstallerPath
 fi
 export isUnAptss=1
 if [[ $1 == aptss ]] || [[ $2 == aptss ]]|| [[ $3 == aptss ]]; then
@@ -123,22 +127,30 @@ if [[ $1 == "mips64el" ]]; then
     if [[ ! -e /usr/share/debootstrap/scripts/DaoXiangHu-stable ]]; then
             sudo cp DaoXiangHu-testing /usr/share/debootstrap/scripts/ -v
     fi
-    sudo debootstrap --no-check-gpg --arch $1 \
+#    sudo debootstrap --no-check-gpg --arch $1 \
+#            buster $mipsInstallerPath https://mirror.nju.edu.cn/debian-archive/debian/
+    sudo debootstrap --no-check-gpg --exclude=usr-is-merged,traceroute --arch $1 \
             DaoXiangHu-testing $mipsInstallerPath http://ftp.loongnix.cn/os/loongnix/20/mips64el/
+    echo "deb [trusted=true] http://ftp.loongnix.cn/os/loongnix/20/mips64el/ DaoXiangHu-testing main contrib non-free" | sudo tee $mipsInstallerPath/etc/apt/sources.list
     echo "gxde-os" | sudo tee $mipsInstallerPath/etc/hostname
     sudo $programPath/pardus-chroot $mipsInstallerPath
-    chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
-    chroot $mipsInstallerPath apt install calamares live-task-standard lxqt -y
+    sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+    sudo chroot $mipsInstallerPath apt install wget -y
+    sudo chroot $mipsInstallerPath wget https://mirror.nju.edu.cn/debian-archive/debian/pool/main/t/traceroute/traceroute_2.1.0-2_mips64el.deb
+    sudo chroot $mipsInstallerPath apt install ./traceroute_2.1.0-2_mips64el.deb -y
+    sudo chroot $mipsInstallerPath rm -rfv traceroute_2.1.0-2_mips64el.deb
+    sudo chroot $mipsInstallerPath apt install calamares xorg lightdm live-task-standard lxqt -y --fix-missing
     sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
-    chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+    sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
-        chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
-        chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+        sudo chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
+        sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     fi
-    chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el -y
-    chroot $mipsInstallerPath apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y
-    chroot $mipsInstallerPath apt clean
-    cp -rv $programPath/EFI-mips64el $mipsInstallerPath/EFI
+    sudo chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el plymouth-theme-gxde-logo -y --fix-missing
+    sudo chroot $mipsInstallerPath apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y --fix-missing
+    sudo chroot $mipsInstallerPath apt clean
+    sudo rm -rfv $mipsInstallerPath/usr/share/lxqt/themes/debian/*.svg
+    sudo cp -rv $programPath/EFI-mips64el $mipsInstallerPath/EFI
     UNMount $mipsInstallerPath
     cd $mipsInstallerPath
     mksquashfs * ../installer.squashfs
@@ -190,7 +202,7 @@ if [[ $1 != "mips64el" ]]; then
 	installWithAptss install calamares-settings-gxde --install-recommends -y
 else
 	#installWithAptss install calamares-settings-gxde-mips64el --install-recommends -y
-	installWithAptss install dracut --install-recommends -y
+	installWithAptss install dracut calamares --install-recommends -y
 	cp -rv $programPath/EFI-mips64el $debianRootfsPath/EFI
 fi
 if [[ $2 == "hetao" ]]; then
