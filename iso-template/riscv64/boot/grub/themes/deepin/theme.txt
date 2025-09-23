@@ -1,0 +1,61 @@
+# 背景图像（与 theme.txt 同目录）
+desktop-image: "background_in_theme.png"
+
+# 不显示标题文本
+#title-text: ""
+
+#version:18
+#lang:en_US.UTF-8
+#screenWidth:1024
+#screenHeight:768
+#head end
+title-text: ""
+desktop-color: "#000000"
+terminal-font: "Unifont Regular 14"
+terminal-box: "terminal_box_*.png"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
++ boot_menu {
+    left = 17%
+    top = 44%
+    width = 70%
+    height = 30%
+    item_font = "Noto Sans CJK SC Regular 12"
+    item_color = "#dddddd"
+    selected_item_color = "#ffffff"
+    item_height = 28
+    item_spacing = 18
+    item_padding = 0 
+    icon_width = 16
+    icon_height = 18
+    item_icon_space = 15
+    item_pixmap_style = "item_*.png"
+    selected_item_pixmap_style = "selected_item_*.png"
+    menu_pixmap_style = "menu_*.png"
+    scrollbar_thumb = "scrollbar_thumb_*.png"
+    scrollbar_width = 6
+    align = "center"
+}
++ label {
+    left = 0
+    top = 97%
+    width = 100%
+    align = "center"
+    id = "__timeout__"
+    color = "#FFFFFF"
+    font = "Noto Sans CJK SC Regular 12"
+    text = "Booting in %d seconds"
+}
++ label {
+    left = 0
+    top = 94%
+    width = 100%
+    align = "center"
+    color = "#FFFFFF"
+    font = "Noto Sans CJK SC Regular 12"
+    text = "Use ↑ and ↓ keys to change selection, Enter to confirm, E to edit the commands before booting or C for a command-line"
+}
+
