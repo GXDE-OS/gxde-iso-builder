@@ -139,7 +139,7 @@ if [[ $1 == "mips64el" ]]; then
     sudo chroot $mipsInstallerPath wget https://mirror.nju.edu.cn/debian-archive/debian/pool/main/t/traceroute/traceroute_2.1.0-2_mips64el.deb
     sudo chroot $mipsInstallerPath apt install ./traceroute_2.1.0-2_mips64el.deb -y
     sudo chroot $mipsInstallerPath rm -rfv traceroute_2.1.0-2_mips64el.deb
-    sudo chroot $mipsInstallerPath apt install calamares xorg lightdm live-task-standard lxqt dracut -y --fix-missing
+    sudo chroot $mipsInstallerPath apt install calamares xorg lightdm live-task-standard xfce4 dracut -y --fix-missing
     sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
     sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
@@ -149,7 +149,7 @@ if [[ $1 == "mips64el" ]]; then
     sudo chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el plymouth-theme-gxde-logo -y --fix-missing
     sudo chroot $mipsInstallerPath apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y --fix-missing
     sudo chroot $mipsInstallerPath apt clean
-    sudo rm -rfv $mipsInstallerPath/usr/share/lxqt/themes/debian/*.svg
+    sudo rm -rfv $mipsInstallerPath/usr/share/xfce4/themes/debian/*.svg
     sudo cp -rv $programPath/EFI-mips64el $mipsInstallerPath/EFI
     UNMount $mipsInstallerPath
     cd $mipsInstallerPath
