@@ -134,21 +134,21 @@ if [[ $1 == "mips64el" ]]; then
     echo "deb [trusted=true] http://ftp.loongnix.cn/os/loongnix/20/mips64el/ DaoXiangHu-testing main contrib non-free" | sudo tee $mipsInstallerPath/etc/apt/sources.list
     echo "gxde-os" | sudo tee $mipsInstallerPath/etc/hostname
     sudo $programPath/pardus-chroot $mipsInstallerPath
-    sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
-    sudo chroot $mipsInstallerPath apt install wget -y
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install wget -y
     sudo chroot $mipsInstallerPath wget https://mirror.nju.edu.cn/debian-archive/debian/pool/main/t/traceroute/traceroute_2.1.0-2_mips64el.deb
-    sudo chroot $mipsInstallerPath apt install ./traceroute_2.1.0-2_mips64el.deb -y
-    sudo chroot $mipsInstallerPath rm -rfv traceroute_2.1.0-2_mips64el.deb
-    sudo chroot $mipsInstallerPath apt install dracut -y
-    sudo chroot $mipsInstallerPath apt install calamares xserver-xorg-video-loongson xorg lightdm live-task-standard xfce4 -y --fix-missing
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install ./traceroute_2.1.0-2_mips64el.deb -y
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath rm -rfv traceroute_2.1.0-2_mips64el.deb
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install dracut -y
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install calamares xserver-xorg-video-loongson xorg lightdm live-task-standard xfce4 -y --fix-missing
     sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
     sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
-        sudo chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
+        sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
         sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     fi
-    sudo chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el gxde-icon-theme plymouth-theme-gxde-logo -y --fix-missing
-    sudo chroot $mipsInstallerPath apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y --fix-missing
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el gxde-icon-theme plymouth-theme-gxde-logo -y --fix-missing
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y --fix-missing
     sudo chroot $mipsInstallerPath apt clean
     sudo rm -rfv $mipsInstallerPath/usr/share/xfce4/themes/debian/*.svg
     sudo rm -rfv /usr/share/images/desktop-base/desktop-background
