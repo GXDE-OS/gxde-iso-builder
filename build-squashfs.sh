@@ -140,7 +140,7 @@ if [[ $1 == "mips64el" ]]; then
     sudo chroot $mipsInstallerPath apt install ./traceroute_2.1.0-2_mips64el.deb -y
     sudo chroot $mipsInstallerPath rm -rfv traceroute_2.1.0-2_mips64el.deb
     sudo chroot $mipsInstallerPath apt install dracut -y
-    sudo chroot $mipsInstallerPath apt install calamares xorg lightdm live-task-standard xfce4 -y --fix-missing
+    sudo chroot $mipsInstallerPath apt install calamares xserver-xorg-video-loongson xorg lightdm live-task-standard xfce4 -y --fix-missing
     sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
     sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
@@ -231,11 +231,11 @@ installWithAptss full-upgrade -y
 installWithAptss install linglong-bin linglong-box -y
 
 if [[ $1 == loong64 ]]; then
-    chrootCommand aptss install spark-store -y
+    installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
     chrootCommand aptss install cn.loongnix.lbrowser -y
 elif [[ $1 == amd64 ]]; then
-    chrootCommand aptss install spark-store -y
+    installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
     chrootCommand aptss install firefox-spark -y
     chrootCommand aptss install spark-deepin-cloud-print spark-deepin-cloud-scanner -y
@@ -244,20 +244,20 @@ elif [[ $1 == amd64 ]]; then
         installWithAptss install boot-repair -y
     fi
 elif [[ $1 == arm64 ]]; then
-    chrootCommand aptss install spark-store -y
+    installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
     chrootCommand aptss install firefox-spark -y
     installWithAptss install dummyapp-wps-office dummyapp-spark-deepin-wine-runner -y
 elif [[ $1 == "mips64el" ]]; then
-    chrootCommand /usr/bin/apt install loongsonapplication -y
+    installWithAptss install loongsonapplication -y
     installWithAptss install firefox-esr firefox-esr-l10n-zh-cn -y
 elif [[ $1 == "i386" ]]; then
-    chrootCommand /usr/bin/apt install aptss -y
+    installWithAptss install aptss -y
     installWithAptss update -o Acquire::Check-Valid-Until=false
     installWithAptss install firefox-esr firefox-esr-l10n-zh-cn -y
     installWithAptss install boot-repair -y
 else 
-    chrootCommand /usr/bin/apt install aptss -y
+    installWithAptss install aptss -y
     installWithAptss update -o Acquire::Check-Valid-Until=false
     installWithAptss install firefox-esr firefox-esr-l10n-zh-cn -y
 fi
@@ -302,6 +302,9 @@ fi
 installWithAptss install firmware-iwlwifi firmware-realtek -y
 installWithAptss install firmware-sof-signed -y
 installWithAptss install grub-common -y
+if [[ $1 == mips64el ]]; then
+    installWithAptss install xserver-xorg-video-loongson -y
+fi
 # 清空临时文件
 installWithAptss autopurge fonts-noto-extra fonts-noto-ui-extra fonts-noto-cjk-extra -y
 installWithAptss autopurge -y
