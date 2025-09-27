@@ -147,14 +147,14 @@ if [[ $1 == "mips64el" ]]; then
         sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
         sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     fi
-    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el gxde-icon-theme plymouth-theme-gxde-logo -y --fix-missing
     sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y --fix-missing
+    sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install calamares-settings-gxde-mips64el gxde-icon-theme plymouth-theme-gxde-logo -y --fix-missing
     sudo chroot $mipsInstallerPath apt clean
     sudo rm -rfv $mipsInstallerPath/usr/share/xfce4/themes/debian/*.svg
-    sudo rm -rfv /usr/share/images/desktop-base/desktop-background
-    sudo rm -rfv /usr/share/images/desktop-base/default
-    sudo rm -rfv "/usr/share/images/desktop-base/default/*.png"
-    sudo rm -rfv "/usr/share/images/desktop-base/default/*.svg"
+    sudo rm -rfv $mipsInstallerPath/usr/share/images/desktop-base/desktop-background
+    sudo rm -rfv $mipsInstallerPath/usr/share/images/desktop-base/default
+    sudo rm -rfv $mipsInstallerPath/usr/share/images/desktop-base/login-background.svg
+    sudo rm -rfv $mipsInstallerPath/usr/share/images/desktop-base/desktop-grub.png
     sudo cp -rv $programPath/EFI-mips64el $mipsInstallerPath/EFI
     UNMount $mipsInstallerPath
     cd $mipsInstallerPath
