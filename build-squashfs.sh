@@ -358,6 +358,10 @@ cd ..
 # 获取内核数量
 kernelNumber=$(ls -1 ../../$debianRootfsPath/boot/vmlinuz-* | wc -l)
 vmlinuzList=($(ls -1 ../../$debianRootfsPath/boot/vmlinuz-* | sort -rV))
+if [[ $kernelNumber == 0 ]]; then
+    kernelNumber=$(ls -1 ../../$debianRootfsPath/boot/vmlinux-* | wc -l)
+    vmlinuzList=($(ls -1 ../../$debianRootfsPath/boot/vmlinux-* | sort -rV))
+fi
 initrdList=($(ls -1 ../../$debianRootfsPath/boot/initrd.img-* | sort -rV))
 for i in $( seq 0 $(expr $kernelNumber - 1) )
 do
