@@ -92,6 +92,7 @@ case $2 in
     "lizhi")
         buildDebianRootf $1 trixie
         sudo cp $programPath/gxde-temp-lizhi.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
+        sudo cp $programPath/gxde-temp-lizhi-system.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
     ;;
     "zhuangzhuang")
         buildDebianRootf $1 trixie
