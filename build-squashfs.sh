@@ -96,6 +96,7 @@ case $2 in
     "zhuangzhuang")
         buildDebianRootf $1 trixie
         sudo cp $programPath/gxde-temp-lizhi.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
+        sudo cp $programPath/gxde-temp-lizhi-system.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
     ;;
     "meimei")
         if [[ ! -e /usr/share/debootstrap/scripts/loongnix ]]; then
@@ -327,6 +328,7 @@ sudo rm $debianRootfsPath/etc/apt/sources.list.d/debian-backports.list -rf
 sudo rm -rf $debianRootfsPath/var/log/*
 sudo rm -rf $debianRootfsPath/root/.bash_history
 sudo rm -rf $debianRootfsPath/etc/apt/sources.list.d/temp.list
+sudo rm -rf $debianRootfsPath/etc/apt/sources.list.d/temp-system.list
 sudo rm -rf $debianRootfsPath/initrd.img.old
 sudo rm -rf $debianRootfsPath/vmlinuz.old
 # 卸载文件
