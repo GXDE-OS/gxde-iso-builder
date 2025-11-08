@@ -47,9 +47,15 @@ function buildDebianRootf() {
             sudo mv squashfs-root $debianRootfsPath -v
         fi
     else
-        sudo debootstrap --no-check-gpg --arch $1 \
-            --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
-            $2 $debianRootfsPath https://mirrors.cernet.edu.cn/debian/
+        if [[ $1 == "mips64el" ]] && [[ $2 == "trixie" ]]; then
+            sudo debootstrap --no-check-gpg --arch $1 \
+                --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
+                sid $debianRootfsPath https://mips-repo.gxde.top/
+        else
+            sudo debootstrap --no-check-gpg --arch $1 \
+                --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
+                $2 $debianRootfsPath https://mirrors.cernet.edu.cn/debian/
+        fi
     fi
 }
 programPath=$(cd $(dirname $0); pwd)
