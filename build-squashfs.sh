@@ -189,7 +189,7 @@ sudo $programPath/pardus-chroot $debianRootfsPath
 chrootCommand /usr/bin/apt update -o Acquire::Check-Valid-Until=false
 chrootCommand /usr/bin/apt install debian-ports-archive-keyring debian-archive-keyring -y
 chrootCommand /usr/bin/apt install sudo vim -y
-chrootCommand /usr/bin/apt install gxde-source -y
+chrootCommand /usr/bin/apt install gxde-source gxde-desktop-base -y
 chrootCommand rm -rfv /etc/apt/sources.list.d/temp.list
 chrootCommand /usr/bin/apt update -o Acquire::Check-Valid-Until=false
 if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
