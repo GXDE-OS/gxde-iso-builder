@@ -245,6 +245,7 @@ if [[ $1 == loong64 ]]; then
 elif [[ $1 == amd64 ]]; then
     installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
+    installWithAptss install dde-store -y
     chrootCommand aptss install firefox-spark -y
     chrootCommand aptss install spark-deepin-cloud-print spark-deepin-cloud-scanner -y
     installWithAptss install dummyapp-wps-office dummyapp-spark-deepin-wine-runner -y
@@ -254,6 +255,7 @@ elif [[ $1 == amd64 ]]; then
 elif [[ $1 == arm64 ]]; then
     installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
+    installWithAptss install dde-store -y
     chrootCommand aptss install firefox-spark -y
     installWithAptss install dummyapp-wps-office dummyapp-spark-deepin-wine-runner -y
 elif [[ $1 == "mips64el" ]]; then
@@ -322,6 +324,7 @@ chrootCommand /usr/bin/apt install grub-pc --download-only -y
 chrootCommand /usr/bin/apt install grub-efi-$1 --download-only -y
 chrootCommand /usr/bin/apt install grub-efi --download-only -y
 chrootCommand /usr/bin/apt install grub-common --download-only -y
+chrootCommand /usr/bin/apt install aptss --download-only -y
 chrootCommand /usr/bin/apt install cryptsetup-initramfs cryptsetup keyutils --download-only -y
 
 
