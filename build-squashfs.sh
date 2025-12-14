@@ -309,7 +309,7 @@ if [[ $2 == hetao ]]; then
 else
     installWithAptss install firmware-linux -y
 fi
-installWithAptss install firmware-iwlwifi firmware-realtek -y
+installWithAptss install firmware-iwlwifi firmware-realtek firmware-atheros -y
 installWithAptss install firmware-sof-signed -y
 installWithAptss install grub-common -y
 if [[ $1 == mips64el ]]; then
