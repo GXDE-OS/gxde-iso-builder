@@ -106,12 +106,12 @@ case $2 in
         sudo cp $programPath/gxde-temp-lizhi-system.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
     ;;
     "meimei")
-        if [[ ! -e /usr/share/debootstrap/scripts/loongnix ]]; then
-            sudo cp loongnix /usr/share/debootstrap/scripts/ -v
+        if [[ ! -e /usr/share/debootstrap/scripts/loongnix-stable ]]; then
+            sudo cp loongnix /usr/share/debootstrap/scripts/loongnix-stable -v
         fi
         sudo debootstrap --no-check-gpg --arch $1 \
             --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
-            loongnix $debianRootfsPath https://pkg.loongnix.cn/loongnix/25
+            loongnix-stable $debianRootfsPath https://pkg.loongnix.cn/loongnix/25
         sudo cp $programPath/gxde-temp-meimei.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
     ;;
     "hetao")
@@ -307,7 +307,9 @@ if [[ $2 == hetao ]]; then
 else
     installWithAptss install firmware-linux -y
 fi
-installWithAptss install firmware-iwlwifi firmware-realtek firmware-atheros -y
+installWithAptss install firmware-iwlwifi firmware-realtek -y
+installWithAptss install firmware-atheros -y
+installWithAptss install firmware-ath9k-htc -y
 installWithAptss install firmware-sof-signed -y
 installWithAptss install grub-common -y
 if [[ $1 == mips64el ]]; then
