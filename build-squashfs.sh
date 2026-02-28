@@ -153,7 +153,7 @@ if [[ $1 == "mips64el" ]]; then
     sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath rm -rfv traceroute_2.1.0-2_mips64el.deb
     sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install dracut -y
     sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install calamares xserver-xorg-video-loongson xorg lightdm live-task-standard xfce4 -y --fix-missing
-    sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
+    sudo cp $programPath/gxde-temp-bixie.list $mipsInstallerPath/etc/apt/sources.list.d/temp.list -v
     sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
         sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
