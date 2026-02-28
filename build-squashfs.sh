@@ -50,7 +50,7 @@ function buildDebianRootf() {
         if [[ $1 == "mips64el" ]] && [[ $2 == "trixie" ]]; then
             sudo debootstrap --no-check-gpg --arch $1 \
                 --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
-                sid $debianRootfsPath https://mips-repo.gxde.top/
+                sid $debianRootfsPath https://mips-repo.gxde.top/debian/
         else
             sudo debootstrap --no-check-gpg --arch $1 \
                 --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
@@ -98,7 +98,11 @@ case $2 in
     "lizhi")
         buildDebianRootf $1 trixie
         sudo cp $programPath/gxde-temp-lizhi.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
-        sudo cp $programPath/gxde-temp-lizhi-system.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
+        if [[ $1 == "mips64el" ]]; then
+            sudo cp $programPath/gxde-temp-lizhi-system-mips64el.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
+        else
+            sudo cp $programPath/gxde-temp-lizhi-system.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
+        fi
     ;;
     "zhuangzhuang")
         buildDebianRootf $1 trixie
