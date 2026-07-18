@@ -58,7 +58,7 @@ mipsInstallerPath=mipsInstaller
 if [[ $1 == "" ]]; then
     echo 请指定架构：i386 amd64 arm64 mips64el loong64
     echo 还可以代号以构建内测镜像
-    echo "如 $0  amd64  [tianlu] [aptss(可选)] 顺序不能乱"
+    echo "如 $0  amd64  [tianlu] [aptss(可选)] [pangu(可选)] 顺序不能乱"
     exit 1
 fi
 if [[ -d $debianRootfsPath ]]; then
@@ -299,8 +299,12 @@ sudo rm -fv $debianRootfsPath/boot/vmlinuz-*
 sudo rm -fv $debianRootfsPath/boot/initrd.img-* 
 # 安装内核
 installWithAptss autopurge "linux-image-*" "linux-headers-*" -y
-installWithAptss install linux-kernel-gxde-$1 -y
-installWithAptss install linux-kernel-oldstable-gxde-$1 -y
+if [[ $3 == "pangu" ]]; then
+    installWithAptss install linux-kernel-pangu-m900-arm64 -y
+else
+    installWithAptss install linux-kernel-gxde-$1 -y
+    installWithAptss install linux-kernel-oldstable-gxde-$1 -y
+fi
 
 # 禁用 nmbd
 chrootCommand systemctl disable nmbd
