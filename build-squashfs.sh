@@ -300,7 +300,7 @@ sudo rm -fv $debianRootfsPath/boot/initrd.img-*
 # 安装内核
 installWithAptss autopurge "linux-image-*" "linux-headers-*" -y
 if [[ $3 == "pangu" ]]; then
-    installWithAptss install linux-kernel-pangu-m900-arm64 -y
+    installWithAptss install gxde-pangu-m900-config -y
 else
     installWithAptss install linux-kernel-gxde-$1 -y
     installWithAptss install linux-kernel-oldstable-gxde-$1 -y
