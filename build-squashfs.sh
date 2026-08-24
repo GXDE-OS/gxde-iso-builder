@@ -48,7 +48,7 @@ function buildDebianRootf() {
         else
             sudo debootstrap --no-check-gpg --arch $1 \
                 --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
-                $2 $debianRootfsPath https://mirrors.cernet.edu.cn/debian/
+                $2 $debianRootfsPath https://mirrors.aliyun.com/debian/
         fi
     fi
 }
