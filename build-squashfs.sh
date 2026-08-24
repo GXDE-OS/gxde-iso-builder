@@ -58,7 +58,7 @@ mipsInstallerPath=mipsInstaller
 if [[ $1 == "" ]]; then
     echo 请指定架构：i386 amd64 arm64 mips64el loong64
     echo 还可以代号以构建内测镜像
-    echo "如 $0  amd64  [tianlu] [aptss(可选)] [pangu(可选)] 顺序不能乱"
+    echo "如 $0  amd64  [tianlu] [aptss(可选)] [pangu/kirin9000c(可选)] 顺序不能乱"
     exit 1
 fi
 if [[ -d $debianRootfsPath ]]; then
@@ -303,6 +303,8 @@ sudo rm -fv $debianRootfsPath/boot/initrd.img-*
 installWithAptss autopurge "linux-image-*" "linux-headers-*" -y
 if [[ $3 == "pangu" ]]; then
     installWithAptss install gxde-pangu-m900-config -y
+elif [[ $3 == "kirin9000c" ]]; then
+    installWithAptss install gxde-hisi-9000c-gpu-compat -y
 else
     installWithAptss install linux-kernel-gxde-$1 -y
     installWithAptss install linux-kernel-oldstable-gxde-$1 -y
