@@ -218,8 +218,6 @@ chrootCommand aptss update -o Acquire::Check-Valid-Until=false
 
 # 
 installWithAptss install gxde-desktop --install-recommends -y
-# 启用 lightdm
-chrootCommand systemctl enable lightdm
 chrootCommand dpkg-reconfigure gxde-session-ui
 if [[ $1 != "mips64el" ]]; then
 	installWithAptss install calamares-settings-gxde --install-recommends -y
