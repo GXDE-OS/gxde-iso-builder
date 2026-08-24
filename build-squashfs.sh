@@ -294,6 +294,7 @@ fi
 # 卸载无用应用
 installWithAptss purge  mlterm mlterm-tiny deepin-terminal-gtk -y
 installWithAptss purge deepin-terminal ibus systemsettings -y
+installWithAptss purge lightdm -y
 installWithAptss purge deepin-wine8-stable breeze-* mpv ghostty -y
 # 删除交叉构建时错误生成的内核文件
 sudo rm -fv $debianRootfsPath/boot/vmlinuz-* 
