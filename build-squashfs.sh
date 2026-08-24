@@ -64,7 +64,7 @@ useAptss=0
 
 for arg in "$@"; do
     case "$arg" in
-        i386|amd64|arm64|mips64el|loong64)
+        i386|amd64|arm64|mips64el|loong64|riscv64)
             if [[ -n "$arch" ]]; then
                 echo "错误：重复指定架构：$arg" >&2
                 exit 1
