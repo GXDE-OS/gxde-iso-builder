@@ -55,12 +55,62 @@ function buildDebianRootf() {
 programPath=$(cd $(dirname $0); pwd)
 debianRootfsPath=debian-rootfs
 mipsInstallerPath=mipsInstaller
-if [[ $1 == "" ]]; then
+
+# 参数解析：架构、代号、aptss、pangu/kirin9000c 均可乱序，aptss 可与其他参数同时使用
+arch=""
+codename=""
+device=""
+useAptss=0
+
+for arg in "$@"; do
+    case "$arg" in
+        i386|amd64|arm64|mips64el|loong64)
+            if [[ -n "$arch" ]]; then
+                echo "错误：重复指定架构：$arg" >&2
+                exit 1
+            fi
+            arch="$arg"
+            ;;
+        tianlu|bixie|lizhi|zhuangzhuang|meimei|hetao)
+            if [[ -n "$codename" ]]; then
+                echo "错误：重复指定代号：$arg" >&2
+                exit 1
+            fi
+            codename="$arg"
+            ;;
+        aptss)
+            useAptss=1
+            ;;
+        pangu|kirin9000c)
+            if [[ -n "$device" ]]; then
+                echo "错误：重复指定设备/平台：$arg" >&2
+                exit 1
+            fi
+            device="$arg"
+            ;;
+        *)
+            echo "错误：无法识别的参数：$arg" >&2
+            echo "用法：$0 [架构] [代号] [aptss] [pangu/kirin9000c]，顺序不限" >&2
+            exit 1
+            ;;
+    esac
+done
+
+if [[ -z "$arch" ]]; then
     echo 请指定架构：i386 amd64 arm64 mips64el loong64
     echo 还可以代号以构建内测镜像
-    echo "如 $0  amd64  [tianlu] [aptss(可选)] [pangu/kirin9000c(可选)] 顺序不能乱"
+    echo "如 $0  amd64  [tianlu] [aptss(可选)] [pangu/kirin9000c(可选)] 顺序不限，aptss 可与其他参数同时使用"
     exit 1
 fi
+
+export isUnAptss=1
+if [[ $useAptss == 1 ]]; then
+    export isUnAptss=0
+fi
+
+# 统一还原为后续脚本依赖的位置参数顺序
+set -- "$arch" "$codename" "$device"
+
 if [[ -d $debianRootfsPath ]]; then
     UNMount $debianRootfsPath
     sudo rm -rf $debianRootfsPath
@@ -68,10 +118,6 @@ fi
 if [[ -d $mipsInstallerPath ]]; then
     UNMount $mipsInstallerPath
     sudo rm -rf $mipsInstallerPath
-fi
-export isUnAptss=1
-if [[ $1 == aptss ]] || [[ $2 == aptss ]]|| [[ $3 == aptss ]]; then
-    export isUnAptss=0
 fi
 sudo rm -rf grub-deb
 sudo /usr/bin/apt install debian-archive-keyring debian-ports-archive-keyring -y
