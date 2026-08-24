@@ -239,7 +239,8 @@ fi
 sudo rm -rf $debianRootfsPath/var/lib/dpkg/info/plymouth-theme-gxde-logo.postinst
 installWithAptss install live-task-recommended live-task-standard live-config-systemd \
     live-boot -y
-installWithAptss install  fcitx5-frontend-all fcitx5-pinyin fcitx5-chinese-addons libime-bin libudisks2-qt5-0 fcitx5 -y
+installWithAptss install live-config-gxde -y
+installWithAptss install fcitx5-frontend-all fcitx5-pinyin fcitx5-chinese-addons libime-bin libudisks2-qt5-0 fcitx5 -y
 # 
 
 installWithAptss update -o Acquire::Check-Valid-Until=false
