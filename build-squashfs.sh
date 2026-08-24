@@ -119,7 +119,7 @@ fi
 sudo rm -rf grub-deb
 sudo /usr/bin/apt install debian-archive-keyring debian-ports-archive-keyring -y
 sudo /usr/bin/apt install debootstrap  \
-    qemu-user-static genisoimage xorriso \
+    qemu-user-binfmt genisoimage xorriso \
     squashfs-tools -y
 # 构建核心系统
 set +e
