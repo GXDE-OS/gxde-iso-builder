@@ -108,9 +108,6 @@ if [[ $useAptss == 1 ]]; then
     export isUnAptss=0
 fi
 
-# 统一还原为后续脚本依赖的位置参数顺序
-set -- "$arch" "$codename" "$device"
-
 if [[ -d $debianRootfsPath ]]; then
     UNMount $debianRootfsPath
     sudo rm -rf $debianRootfsPath
@@ -126,22 +123,22 @@ sudo /usr/bin/apt install debootstrap  \
     squashfs-tools -y
 # 构建核心系统
 set +e
-case $2 in
+case ${codename} in
     "tianlu")
-        buildDebianRootf $1 bookworm
+        buildDebianRootf ${arch} bookworm
         sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
     ;;
     "bixie")
-        buildDebianRootf $1 bookworm
+        buildDebianRootf ${arch} bookworm
         sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
     ;;
     "lizhi")
-        buildDebianRootf $1 trixie
+        buildDebianRootf ${arch} trixie
         sudo cp $programPath/gxde-temp-lizhi.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
-        if [[ $1 == "mips64el" ]]; then
+        if [[ ${arch} == "mips64el" ]]; then
             sudo cp $programPath/gxde-temp-lizhi-system-mips64el.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
         else
-            if [[ $1 == loong64 ]]; then
+            if [[ ${arch} == loong64 ]]; then
                 sudo cp $programPath/gxde-temp-lizhi-system-loong64.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
             else
                 sudo cp $programPath/gxde-temp-lizhi-system.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
@@ -149,12 +146,12 @@ case $2 in
         fi
     ;;
     "zhuangzhuang")
-        buildDebianRootf $1 trixie
+        buildDebianRootf ${arch} trixie
         sudo cp $programPath/gxde-temp-lizhi.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
-        if [[ $1 == "mips64el" ]]; then
+        if [[ ${arch} == "mips64el" ]]; then
             sudo cp $programPath/gxde-temp-lizhi-system-mips64el.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
         else
-            if [[ $1 == loong64 ]]; then
+            if [[ ${arch} == loong64 ]]; then
                 sudo cp $programPath/gxde-temp-lizhi-system-loong64.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
             else
                 sudo cp $programPath/gxde-temp-lizhi-system.list $debianRootfsPath/etc/apt/sources.list.d/temp-system.list -v
@@ -165,7 +162,7 @@ case $2 in
         if [[ ! -e /usr/share/debootstrap/scripts/loongnix-stable ]]; then
             sudo cp loongnix /usr/share/debootstrap/scripts/loongnix-stable -v
         fi
-        sudo debootstrap --no-check-gpg --arch $1 \
+        sudo debootstrap --no-check-gpg --arch ${arch} \
             --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
             loongnix-stable $debianRootfsPath https://pkg.loongnix.cn/loongnix/25
         sudo cp $programPath/gxde-temp-meimei.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
@@ -174,26 +171,26 @@ case $2 in
         if [[ ! -e /usr/share/debootstrap/scripts/loongnix ]]; then
                 sudo cp crimson /usr/share/debootstrap/scripts/ -v
         fi
-        sudo debootstrap --no-check-gpg --arch $1 \
+        sudo debootstrap --no-check-gpg --arch ${arch} \
             --include=deepin-keyring,sudo,vim \
             crimson $debianRootfsPath https://mirrors.hit.edu.cn/deepin/beige/
         sudo cp $programPath/gxde-temp-hetao.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
         sudo sed -i "s/main/main commercial community/g" $debianRootfsPath/etc/apt/sources.list
     ;;
     *)
-        buildDebianRootf $1 bookworm
+        buildDebianRootf ${arch} bookworm
         sudo cp $programPath/gxde-temp-bixie.list $debianRootfsPath/etc/apt/sources.list.d/temp.list -v
     ;;
 esac
 
-if [[ $1 == "mips64el" ]]; then
+if [[ ${arch} == "mips64el" ]]; then
     # 因 mips64el 的 EFI 比较特殊，所以我们将使用 loongnix20 的 calamares 来安装配置 GXDE
     if [[ ! -e /usr/share/debootstrap/scripts/DaoXiangHu-stable ]]; then
             sudo cp DaoXiangHu-testing /usr/share/debootstrap/scripts/ -v
     fi
-#    sudo debootstrap --no-check-gpg --arch $1 \
+#    sudo debootstrap --no-check-gpg --arch ${arch} \
 #            buster $mipsInstallerPath https://mirror.nju.edu.cn/debian-archive/debian/
-    sudo debootstrap --no-check-gpg --exclude=usr-is-merged,traceroute --arch $1 \
+    sudo debootstrap --no-check-gpg --exclude=usr-is-merged,traceroute --arch ${arch} \
             DaoXiangHu-testing $mipsInstallerPath http://ftp.loongnix.cn/os/loongnix/20/mips64el/
     echo "deb [trusted=true] http://ftp.loongnix.cn/os/loongnix/20/mips64el/ DaoXiangHu-testing main contrib non-free" | sudo tee $mipsInstallerPath/etc/apt/sources.list
     echo "gxde-os" | sudo tee $mipsInstallerPath/etc/hostname
@@ -207,7 +204,7 @@ if [[ $1 == "mips64el" ]]; then
     sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath apt install calamares xserver-xorg-video-loongson xorg lightdm live-task-standard xfce4 -y --fix-missing
     sudo cp $programPath/gxde-temp-bixie.list $mipsInstallerPath/etc/apt/sources.list.d/temp.list -v
     sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
-    if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
+    if [[ ${codename} == "tianlu" ]] || [[ ${codename} == "zhuangzhuang" ]]; then
         sudo env DEBIAN_FRONTEND=noninteractive chroot $mipsInstallerPath /usr/bin/apt install gxde-testing-source -y
         sudo chroot $mipsInstallerPath /usr/bin/apt update -o Acquire::Check-Valid-Until=false
     fi
@@ -229,8 +226,8 @@ fi
 # 修改系统主机名
 echo "gxde-os" | sudo tee $debianRootfsPath/etc/hostname
 # 写入源
-if [[ $2 == "" ]] || [[ $2 == "tianlu" ]] || [[ $2 == "bixie" ]]; then
-    if [[ $1 == loong64 ]]; then
+if [[ ${codename} == "" ]] || [[ ${codename} == "tianlu" ]] || [[ ${codename} == "bixie" ]]; then
+    if [[ ${arch} == loong64 ]]; then
         sudo cp $programPath/debian-unreleased.list $debianRootfsPath/etc/apt/sources.list -v
     else
         sudo cp $programPath/debian.list $debianRootfsPath/etc/apt/sources.list -v
@@ -239,7 +236,7 @@ if [[ $2 == "" ]] || [[ $2 == "tianlu" ]] || [[ $2 == "bixie" ]]; then
     fi
 fi
 #sudo cp $programPath/os-release $debianRootfsPath/usr/lib/os-release
-if [[ $2 != "hetao" ]]; then
+if [[ ${codename} != "hetao" ]]; then
     sudo sed -i "s/main/main contrib non-free non-free-firmware/g" $debianRootfsPath/etc/apt/sources.list
 fi
 
@@ -254,7 +251,7 @@ chrootCommand /usr/bin/apt install sudo vim -y
 chrootCommand /usr/bin/apt install gxde-source gxde-desktop-base -y
 chrootCommand rm -rfv /etc/apt/sources.list.d/temp.list
 chrootCommand /usr/bin/apt update -o Acquire::Check-Valid-Until=false
-if [[ $2 == "tianlu" ]] || [[ $2 == "zhuangzhuang" ]]; then
+if [[ ${codename} == "tianlu" ]] || [[ ${codename} == "zhuangzhuang" ]]; then
     chrootCommand /usr/bin/apt install gxde-testing-source -y
     chrootCommand /usr/bin/apt update -o Acquire::Check-Valid-Until=false
 fi
@@ -265,14 +262,14 @@ chrootCommand aptss update -o Acquire::Check-Valid-Until=false
 # 
 installWithAptss install gxde-desktop --install-recommends -y
 chrootCommand dpkg-reconfigure gxde-session-ui
-if [[ $1 != "mips64el" ]]; then
+if [[ ${arch} != "mips64el" ]]; then
 	installWithAptss install calamares-settings-gxde --install-recommends -y
 else
 	#installWithAptss install calamares-settings-gxde-mips64el --install-recommends -y
 	installWithAptss install dracut calamares --install-recommends -y
 	cp -rv $programPath/EFI-mips64el $debianRootfsPath/EFI
 fi
-if [[ $2 == "hetao" ]]; then
+if [[ ${codename} == "hetao" ]]; then
     # 安装该包以正常运行 dtk6 应用
     installWithAptss install dde-qt6integration dde-qt6xcb-plugin --install-recommends -y
 fi
@@ -293,32 +290,32 @@ installWithAptss full-upgrade -y
 
 installWithAptss install linglong-bin linglong-box -y
 
-if [[ $1 == loong64 ]]; then
+if [[ ${arch} == loong64 ]]; then
     installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
-    if [[ $2 == hetao ]]; then
+    if [[ ${codename} == hetao ]]; then
         installWithAptss install firefox firefox-l10n-all -y
     else
         installWithAptss install firefox-esr firefox-esr-l10n-all -y
     fi
-elif [[ $1 == amd64 ]]; then
+elif [[ ${arch} == amd64 ]]; then
     installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
     chrootCommand aptss install firefox-spark -y
     chrootCommand aptss install spark-deepin-cloud-print spark-deepin-cloud-scanner -y
     installWithAptss install dummyapp-wps-office dummyapp-spark-deepin-wine-runner -y
-    if [[ $2 != "hetao" ]]; then
+    if [[ ${codename} != "hetao" ]]; then
         installWithAptss install boot-repair -y
     fi
-elif [[ $1 == arm64 ]]; then
+elif [[ ${arch} == arm64 ]]; then
     installWithAptss install spark-store -y
     chrootCommand aptss update -o Acquire::Check-Valid-Until=false
     chrootCommand aptss install firefox-spark -y
     installWithAptss install dummyapp-wps-office dummyapp-spark-deepin-wine-runner -y
-elif [[ $1 == "mips64el" ]]; then
+elif [[ ${arch} == "mips64el" ]]; then
     installWithAptss install loongsonapplication -y
     installWithAptss install firefox-esr firefox-esr-l10n-all -y
-elif [[ $1 == "i386" ]]; then
+elif [[ ${arch} == "i386" ]]; then
     installWithAptss install aptss -y
     installWithAptss update -o Acquire::Check-Valid-Until=false
     installWithAptss install firefox-esr firefox-esr-l10n-all -y
@@ -328,12 +325,12 @@ else
     installWithAptss update -o Acquire::Check-Valid-Until=false
     installWithAptss install firefox-esr firefox-esr-l10n-all -y
 fi
-#if [[ $1 == arm64 ]] || [[ $1 == loong64 ]]; then
+#if [[ ${arch} == arm64 ]] || [[ ${arch} == loong64 ]]; then
 #    installWithAptss install spark-box64 -y
 #fi
-#chrootCommand /usr/bin/apt install grub-efi-$1 -y
-#if [[ $1 != amd64 ]]; then
-#    chrootCommand /usr/bin/apt install grub-efi-$1 -y
+#chrootCommand /usr/bin/apt install grub-efi-${arch} -y
+#if [[ ${arch} != amd64 ]]; then
+#    chrootCommand /usr/bin/apt install grub-efi-${arch} -y
 #fi
 # 卸载无用应用
 installWithAptss purge  mlterm mlterm-tiny deepin-terminal-gtk -y
@@ -345,20 +342,20 @@ sudo rm -fv $debianRootfsPath/boot/vmlinuz-*
 sudo rm -fv $debianRootfsPath/boot/initrd.img-* 
 # 安装内核
 installWithAptss autopurge "linux-image-*" "linux-headers-*" -y
-if [[ $3 == "pangu" ]]; then
+if [[ ${device} == "pangu" ]]; then
     installWithAptss install gxde-pangu-m900-config -y
-elif [[ $3 == "kirin9000c" ]]; then
+elif [[ ${device} == "kirin9000c" ]]; then
     installWithAptss install gxde-hisi-9000c-gpu-compat -y
 else
-    installWithAptss install linux-kernel-gxde-$1 -y
-    installWithAptss install linux-kernel-oldstable-gxde-$1 -y
+    installWithAptss install linux-kernel-gxde-${arch} -y
+    installWithAptss install linux-kernel-oldstable-gxde-${arch} -y
 fi
 
 # 禁用 nmbd
 chrootCommand systemctl disable nmbd
-if [[ $2 == hetao ]]; then
+if [[ ${codename} == hetao ]]; then
     installWithAptss install linux-firmware -y
-    if [[ $1 == loong64 ]]; then
+    if [[ ${arch} == loong64 ]]; then
         # 安装 loong gpu 驱动
         installWithAptss install loonggpu-driver -y
     fi
@@ -374,7 +371,7 @@ installWithAptss install firmware-brcm80211 -y
 installWithAptss install firmware-mediatek -y
 installWithAptss install firmware-libertas -y
 installWithAptss install grub-common -y
-if [[ $1 == mips64el ]]; then
+if [[ ${arch} == mips64el ]]; then
     installWithAptss install xserver-xorg-video-loongson -y
 fi
 # 清空临时文件
@@ -383,7 +380,7 @@ installWithAptss autopurge -y
 installWithAptss clean
 # 下载所需的安装包
 chrootCommand /usr/bin/apt install grub-pc --download-only -y
-chrootCommand /usr/bin/apt install grub-efi-$1 --download-only -y
+chrootCommand /usr/bin/apt install grub-efi-${arch} --download-only -y
 chrootCommand /usr/bin/apt install grub-efi --download-only -y
 chrootCommand /usr/bin/apt install grub-common --download-only -y
 chrootCommand /usr/bin/apt install dde-store --download-only -y
@@ -415,11 +412,11 @@ sudo mksquashfs * ../filesystem.squashfs
 cd ..
 #du -h filesystem.squashfs
 # 构建 ISO
-if [[ ! -f iso-template/$1-build.sh ]]; then
-    echo 不存在 $1 架构的构建模板，不进行构建
+if [[ ! -f iso-template/${arch}-build.sh ]]; then
+    echo 不存在 ${arch} 架构的构建模板，不进行构建
     exit
 fi
-cd iso-template/$1
+cd iso-template/${arch}
 # 清空废弃文件
 rm -rfv live/*
 rm -rfv deb/*/
@@ -455,14 +452,14 @@ fi
 if [[ ! -f live/vmlinuz-oldstable ]] ;then
     cp live/vmlinuz live/vmlinuz-oldstable
 fi
-if [[ $1 == "mips64el" ]]; then
+if [[ ${arch} == "mips64el" ]]; then
     sudo mv ../../installer.squashfs live/filesystem.squashfs -v
     sudo mv ../../filesystem.squashfs live/system.img -v
 else
     sudo mv ../../filesystem.squashfs live/filesystem.squashfs -v
 fi
 cd ..
-bash $1-build.sh
+bash ${arch}-build.sh
 mv gxde.iso ..
 cd ..
 du -h gxde.iso
