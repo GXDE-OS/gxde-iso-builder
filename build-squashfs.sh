@@ -372,7 +372,7 @@ installWithAptss install firmware-brcm80211 -y
 installWithAptss install firmware-mediatek -y
 installWithAptss install firmware-libertas firmware-brcm80211 -y
 installWithAptss install firmware-intel-misc firmware-intel-graphics firmware-intel-sound -y
-installWithAptss install firmware-ivtv firmware-cirrus firmware-cavium firmware-ast firmware-bnx2x firmware-bnx2 -y
+installWithAptss install firmware-cirrus firmware-cavium firmware-ast firmware-bnx2x firmware-bnx2 -y
 installWithAptss install grub-common -y
 if [[ ${arch} == mips64el ]]; then
     installWithAptss install xserver-xorg-video-loongson -y
