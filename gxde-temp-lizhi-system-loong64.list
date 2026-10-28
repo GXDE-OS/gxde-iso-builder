@@ -1,11 +1,11 @@
-deb http://loong13.debian.net/debian-loong64/ trixie main contrib non-free non-free-firmware
-# deb-src http://loong13.debian.net/debian-loong64/ trixie main contrib non-free non-free-firmware
+deb https://mirrors.loong64.com/debian/ trixie main contrib non-free non-free-firmware
+# deb-src https://mirrors.loong64.com/debian/ trixie main contrib non-free non-free-firmware
 
-deb http://loong13.debian.net/debian-loong64/ trixie-updates main contrib non-free non-free-firmware
-# deb-src http://loong13.debian.net/debian-loong64/ trixie-updates main contrib non-free non-free-firmware
+deb https://mirrors.loong64.com/debian/ trixie-updates main contrib non-free non-free-firmware
+# deb-src https://mirrors.loong64.com/debian/ trixie-updates main contrib non-free non-free-firmware
 
-deb http://loong13.debian.net/debian-loong64/ trixie-backports main contrib non-free non-free-firmware
-# deb-src http://loong13.debian.net/debian-loong64/ trixie-backports main contrib non-free non-free-firmware
+deb https://mirrors.loong64.com/debian/ trixie-backports main contrib non-free non-free-firmware
+# deb-src https://mirrors.loong64.com/debian/ trixie-backports main contrib non-free non-free-firmware
 
-deb http://loong13.debian.net/debian-loong64-security/ trixie-security main contrib non-free non-free-firmware
-# deb-src http://loong13.debian.net/debian-loong64-security/ trixie-security main contrib non-free non-free-firmware
+deb https://mirrors.loong64.com/debian-security/ trixie-security main contrib non-free non-free-firmware
+# deb-src https://mirrors.loong64.com/debian-security/ trixie-security main contrib non-free non-free-firmware

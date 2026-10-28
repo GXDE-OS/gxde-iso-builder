@@ -38,7 +38,7 @@ function buildDebianRootf() {
     if [[ $1 == loong64 ]] && [[ $2 == "trixie" ]]; then
         sudo debootstrap --no-check-gpg --keyring=/usr/share/keyrings/debian-ports-archive-keyring.gpg \
             --include=debian-ports-archive-keyring,debian-archive-keyring,sudo,vim \
-            --arch $1 $2 $debianRootfsPath https://loong13.debian.net/debian-loong64/
+            --arch $1 $2 $debianRootfsPath https://mirrors.loong64.com/debian/
         sudo wget -O $debianRootfsPath/etc/apt/trusted.gpg.d/debian-trixie-loong64.gpg https://loong13.debian.net/keyrings/debian-trixie-loong64.gpg
     else
         if [[ $1 == "mips64el" ]] && [[ $2 == "trixie" ]]; then
